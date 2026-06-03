@@ -20,6 +20,7 @@ export default function FeedSlide({ photo, onLike }: FeedSlideProps) {
 const Slide = styled.div`
   height: 100dvh;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
