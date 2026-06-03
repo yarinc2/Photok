@@ -11,5 +11,8 @@ export function usePhotos() {
       if (!lastPage.next_page) return undefined;
       return lastPage.page + 1;
     },
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    staleTime: Infinity,
   });
 }
