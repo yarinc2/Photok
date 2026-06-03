@@ -1,28 +1,14 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
+import { Heart } from 'lucide-react';
+import styled, { keyframes, css } from 'styled-components';
 
 interface HeartButtonProps {
   liked: boolean;
   onClick: () => void;
 }
 
-function HeartIcon({ filled }: { filled: boolean }) {
-  return (
-    <svg width={18} height={18} viewBox="0 0 24 24" style={{ display: 'block', flexShrink: 0 }}>
-      <path
-        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-        fill={filled ? '#ff3d5a' : 'none'}
-        stroke={filled ? '#ff3d5a' : 'rgba(255,255,255,0.85)'}
-        strokeWidth="1.75"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 export default function HeartButton({ liked, onClick }: HeartButtonProps) {
   const [anim, setAnim] = useState(false);
-  const btnRef = useRef<HTMLButtonElement>(null);
 
   const handleClick = () => {
     setAnim(false);
@@ -33,28 +19,40 @@ export default function HeartButton({ liked, onClick }: HeartButtonProps) {
   };
 
   return (
-    <button
-      ref={btnRef}
-      onClick={handleClick}
-      className={anim ? 'heart-pop' : ''}
-      onAnimationEnd={() => setAnim(false)}
-      style={{
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        padding: 0,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 6,
-        color: 'rgba(255,255,255,0.88)',
-        fontSize: 13,
-        fontWeight: 500,
-        fontFamily: "'DM Sans', sans-serif",
-        WebkitTapHighlightColor: 'transparent',
-        transformOrigin: 'left center',
-      }}
-    >
-      <HeartIcon filled={liked} />
-    </button>
+    <Btn $anim={anim} onClick={handleClick} onAnimationEnd={() => setAnim(false)}>
+      <Heart
+        size={18}
+        fill={liked ? '#ff3d5a' : 'none'}
+        color={liked ? '#ff3d5a' : 'rgba(255,255,255,0.85)'}
+        strokeWidth={1.75}
+      />
+    </Btn>
   );
 }
+
+const heartPop = keyframes`
+  0%, 100% { transform: scale(1); }
+  40%       { transform: scale(1.45); }
+  70%       { transform: scale(0.92); }
+`;
+
+const Btn = styled.button<{ $anim: boolean }>`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  transform-origin: left center;
+  ${({ $anim }) =>
+    $anim &&
+    css`
+      animation: ${heartPop} 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    `}
+`;
