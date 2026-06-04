@@ -1,11 +1,11 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { getPhotos } from '../api/photosApi';
+import { getLikedPhotos } from '../api/photosApi';
 import { PER_PAGE, QueryKey } from '../config/consts';
 
-export function usePhotos() {
+export function useLikedPhotos() {
   return useInfiniteQuery({
-    queryKey: [QueryKey.PHOTOS],
-    queryFn: ({ pageParam }) => getPhotos(pageParam as number, PER_PAGE),
+    queryKey: [QueryKey.LIKED],
+    queryFn: ({ pageParam }) => getLikedPhotos(pageParam as number, PER_PAGE),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       if (!lastPage.next_page) return undefined;
@@ -13,6 +13,5 @@ export function usePhotos() {
     },
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
-    staleTime: Infinity,
   });
 }

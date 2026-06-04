@@ -1,7 +1,7 @@
 import { ArrowUpRight } from 'lucide-react';
 import styled from 'styled-components';
-import HeartButton from './HeartButton';
-import PexelsLogo from './PexelsLogo';
+import HeartButton from '../common/HeartButton';
+import PexelsLogo from '../common/PexelsLogo';
 import ProviderAttribution from '../common/ProviderAttribution';
 import type { Photo } from '../../types';
 

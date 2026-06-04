@@ -1,11 +1,11 @@
 import styled from 'styled-components';
-import HomeFeed from '../components/feed/HomeFeed';
+import LikedFeed from '../components/feed/LikedFeed';
 import Navbar from '../components/layout/Navbar';
 
-export default function HomeView() {
+export default function LikedView() {
   return (
     <AppWrapper>
-      <HomeFeed />
+      <LikedFeed />
       <Navbar />
     </AppWrapper>
   );

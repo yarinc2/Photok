@@ -7,7 +7,7 @@ import type { Photo } from '../../types';
 
 interface FeedSlideProps {
   photo: Photo;
-  onLike: (id: number) => void;
+  onLike: (photo: Photo) => void;
   likeIsPending?: boolean;
 }
 
@@ -37,7 +37,7 @@ export default function FeedSlide({
       <Overlay />
       <InfoCluster
         photo={photo}
-        onLike={() => onLike(photo.id)}
+        onLike={() => onLike(photo)}
         likeIsPending={likeIsPending}
       />
     </Slide>

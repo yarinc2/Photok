@@ -1,16 +1,22 @@
 import { useRef, useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { usePhotos } from '../../hooks/usePhotos';
-import { useLike } from '../../hooks/useLike';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { getErrorCode } from '../../utils/apiError';
+import type { Photo } from '../../types';
+import type { usePhotos } from '../../hooks/usePhotos';
+import type { useLike } from '../../hooks/useLike';
 import FeedSlide from './FeedSlide';
 import Toast from '../common/Toast';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
 import EmptyState from '../common/EmptyState';
 
-export default function Feed() {
+interface PhotoFeedProps {
+  queryResult: ReturnType<typeof usePhotos>;
+  likeResult: ReturnType<typeof useLike>;
+}
+
+export default function PhotoFeed({ queryResult, likeResult }: PhotoFeedProps) {
   const {
     data,
     isLoading,
@@ -20,21 +26,17 @@ export default function Feed() {
     hasNextPage,
     isFetchingNextPage,
     refetch,
-  } = usePhotos();
+  } = queryResult;
 
-  const {
-    mutate: likeMutate,
-    isPending: likeIsPending,
-    variables: likePhotoId,
-  } = useLike();
+  const { mutate, isPending: likeIsPending, variables: likePhoto } = likeResult;
 
   const feedRef = useRef<HTMLDivElement>(null);
   const [toastVisible, setToastVisible] = useState(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const like = useCallback(
-    (photoId: number) => {
-      likeMutate(photoId, {
+  const handleLike = useCallback(
+    (photo: Photo) => {
+      mutate(photo, {
         onError: () => {
           if (toastTimer.current) clearTimeout(toastTimer.current);
           setToastVisible(true);
@@ -42,7 +44,7 @@ export default function Feed() {
         },
       });
     },
-    [likeMutate],
+    [mutate],
   );
 
   const sentinelRef = useInfiniteScroll({
@@ -53,8 +55,7 @@ export default function Feed() {
   });
 
   if (isLoading) return <LoadingSpinner />;
-  if (isError)
-    return <ErrorMessage code={getErrorCode(error)} onRetry={refetch} />;
+  if (isError) return <ErrorMessage code={getErrorCode(error)} onRetry={refetch} />;
 
   const photos = data?.pages.flatMap((p) => p.photos) ?? [];
 
@@ -66,8 +67,8 @@ export default function Feed() {
         <FeedSlide
           key={photo.id}
           photo={photo}
-          onLike={like}
-          likeIsPending={likeIsPending && likePhotoId === photo.id}
+          onLike={handleLike}
+          likeIsPending={likeIsPending && likePhoto?.id === photo.id}
         />
       ))}
 

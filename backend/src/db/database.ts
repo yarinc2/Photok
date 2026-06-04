@@ -8,7 +8,8 @@ const db = new Database(DB_PATH);
 db.exec(`
   CREATE TABLE IF NOT EXISTS likes (
     photo_id INTEGER PRIMARY KEY,
-    liked_at TEXT NOT NULL
+    liked_at TEXT NOT NULL,
+    photo_json TEXT NOT NULL
   )
 `);
 

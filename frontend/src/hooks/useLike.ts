@@ -1,63 +1,52 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleLike } from '../api/photosApi';
 import type { InfiniteData } from '@tanstack/react-query';
-import type { InfinitePhotosPage } from '../types';
+import type { InfinitePhotosPage, Photo } from '../types';
+import { togglePhotoLikeInPages } from '../utils/togglePhotoLikeInPages';
+import { removePhotoFromPages } from '../utils/removePhotoFromPages';
+import { QueryKey } from '../config/consts';
 
-export function useLike() {
+interface UseLikeOptions {
+  removeOnUnlike?: boolean;
+}
+
+export function useLike(
+  queryKey: QueryKey[],
+  invalidateKeys: QueryKey[][] = [],
+  options: UseLikeOptions = {},
+) {
   const queryClient = useQueryClient();
+  const { removeOnUnlike = false } = options;
 
   const mutation = useMutation({
-    mutationFn: (photoId: number) => toggleLike(photoId),
+    mutationFn: (photo: Photo) => toggleLike(photo),
 
-    onMutate: async (photoId: number) => {
-      await queryClient.cancelQueries({ queryKey: ['photos'] });
+    onMutate: async (photo: Photo) => {
+      await queryClient.cancelQueries({ queryKey });
 
       const previous = queryClient.getQueryData<
         InfiniteData<InfinitePhotosPage>
-      >(['photos']);
+      >(queryKey);
 
       queryClient.setQueryData<InfiniteData<InfinitePhotosPage>>(
-        ['photos'],
-        (old) => {
-          if (!old) return old;
-          return {
-            ...old,
-            pages: old.pages.map((page) => ({
-              ...page,
-              photos: page.photos.map((p) =>
-                p.id === photoId ? { ...p, liked: !p.liked } : p,
-              ),
-            })),
-          };
-        },
+        queryKey,
+        (old) =>
+          removeOnUnlike
+            ? removePhotoFromPages(old, photo.id)
+            : togglePhotoLikeInPages(old, photo.id),
       );
 
       return { previous };
     },
 
-    onError: (_err, _photoId, context) => {
+    onError: (_err, _photo, context) => {
       if (context?.previous) {
-        queryClient.setQueryData(['photos'], context.previous);
+        queryClient.setQueryData(queryKey, context.previous);
       }
     },
 
-    onSettled: (_data, _err, photoId) => {
-      // Sync the actual server value for this photo's liked state
-      queryClient.setQueryData<InfiniteData<InfinitePhotosPage>>(
-        ['photos'],
-        (old) => {
-          if (!old || !_data) return old;
-          return {
-            ...old,
-            pages: old.pages.map((page) => ({
-              ...page,
-              photos: page.photos.map((p) =>
-                p.id === photoId ? { ...p, liked: _data.liked } : p,
-              ),
-            })),
-          };
-        },
-      );
+    onSuccess: () => {
+      invalidateKeys.forEach((k) => queryClient.invalidateQueries({ queryKey: k }));
     },
   });
 

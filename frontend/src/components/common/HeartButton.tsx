@@ -9,23 +9,23 @@ interface HeartButtonProps {
 }
 
 export default function HeartButton({ liked, onClick, disabled }: HeartButtonProps) {
-  const [anim, setAnim] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const handleClick = () => {
     if (disabled) return;
-    setAnim(false);
+    setIsAnimating(false);
     requestAnimationFrame(() => {
-      setAnim(true);
+      setIsAnimating(true);
       onClick();
     });
   };
 
   return (
     <Btn
-      $anim={anim}
+      $isAnimating={isAnimating}
       $disabled={!!disabled}
       onClick={handleClick}
-      onAnimationEnd={() => setAnim(false)}
+      onAnimationEnd={() => setIsAnimating(false)}
       aria-label={liked ? 'Unlike' : 'Like'}
       aria-pressed={liked}
     >
@@ -45,7 +45,7 @@ const heartPop = keyframes`
   70%       { transform: scale(0.92); }
 `;
 
-const Btn = styled.button<{ $anim: boolean; $disabled: boolean }>`
+const Btn = styled.button<{ $isAnimating: boolean; $disabled: boolean }>`
   background: none;
   border: none;
   cursor: ${({ $disabled }) => ($disabled ? 'default' : 'pointer')};
@@ -62,8 +62,8 @@ const Btn = styled.button<{ $anim: boolean; $disabled: boolean }>`
   pointer-events: ${({ $disabled }) => ($disabled ? 'none' : 'auto')};
   opacity: ${({ $disabled }) => ($disabled ? 0.55 : 1)};
   transition: opacity 0.15s ease;
-  ${({ $anim }) =>
-    $anim &&
+  ${({ $isAnimating }) =>
+    $isAnimating &&
     css`
       animation: ${heartPop} 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     `}
