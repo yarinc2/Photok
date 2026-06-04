@@ -52,6 +52,10 @@ const Slide = styled.div<{ $avgColor: string }>`
   position: relative;
   overflow: hidden;
   background: ${({ $avgColor }) => $avgColor};
+
+  @media (min-width: 768px) {
+    height: 100%;
+  }
 `;
 
 const SlideImg = styled.img<{ $loaded: boolean }>`

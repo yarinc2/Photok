@@ -89,4 +89,8 @@ const FeedContainer = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+
+  @media (min-width: 768px) {
+    height: 100%;
+  }
 `;

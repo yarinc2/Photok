@@ -40,6 +40,10 @@ const Nav = styled.nav`
   align-items: center;
   justify-content: space-around;
   z-index: 10;
+
+  @media (min-width: 768px) {
+    position: absolute;
+  }
 `;
 
 const NavItem = styled(NavLink)`
