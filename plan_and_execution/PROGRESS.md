@@ -7,7 +7,7 @@
 - [x] `src/types/index.ts`
 - [x] `src/db/database.ts`
 - [x] `src/db/likesRepository.ts`
-- [x] `src/services/pexelsService.ts`
+- [x] `src/services/photosService.ts` (renamed from `pexelsService.ts`)
 - [x] `src/services/likesService.ts`
 - [x] `src/controllers/photosController.ts`
 - [x] `src/controllers/likesController.ts`
@@ -54,3 +54,5 @@
 
 - [x] **Idle re-fetch fix** (`src/hooks/usePhotos.ts`): the app was silently re-fetching the same pages (1..N) while idle. Root cause was React Query's default `refetchOnWindowFocus`/`refetchOnReconnect` — for an infinite query a refetch re-runs _every_ loaded page, so a focus/reconnect event (devtools, alt-tab, network blip) re-pulled the entire feed. Disabled both, and set `staleTime: Infinity` (overriding the global `60_000`) since an endless feed never needs to auto-reload pages already on screen.
 - [x] **Scroll inertia** (`src/components/FeedSlide.tsx`): added `scroll-snap-stop: always` to curb fling momentum carrying past a slide. Improves single-slide stops.
+- [x] **Component extraction** (`src/components/common/`): extracted `ProviderAttribution`, `CenteredIcon`, `RetryButton`, and `StatusMessage` to eliminate duplication across `ErrorMessage`, `EmptyState`, and `FeedSlide`.
+- [x] **Service rename**: `pexelsService.ts` → `photosService.ts` to decouple naming from the provider.
