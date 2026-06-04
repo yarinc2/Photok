@@ -43,7 +43,7 @@
 - Components split into `feed/`, `common/`, and `layout/` subfolders.
 - All three graceful states handled: loading (`LoadingSpinner`), error (`ErrorMessage` with error-code-specific messages), empty (`EmptyState`).
 - Infinite scroll uses `useInfiniteScroll` hook — `IntersectionObserver` with `root` set to the feed container and `rootMargin: 0px 0px ${height * 2}px 0px` to fire ~2 slides before the end.
-- `useLike` applies an optimistic update on `onMutate` and rolls back on `onError`; server value is reconciled in `onSettled`.
+- `useLike` applies an optimistic update on `onMutate` and rolls back on `onError`.
 - Navbar uses `Home` and `Heart` icons from Lucide; active state via `&.active` on the styled `NavLink`.
 - All component styles use styled-components declared at the bottom of each file; `index.css` is global reset + font only.
 - `InfoCluster` bottom offset is `80px` to clear the 64px fixed navbar.
@@ -53,6 +53,21 @@
 ## UI Polish
 
 - [x] **Desktop layout** (`HomeView.tsx`, `Feed.tsx`, `FeedSlide.tsx`, `Navbar.tsx`, `index.css`): on viewports ≥ 768px the app renders as a centered phone-column (500×78dvh) with a black-to-Pexels-green gradient background. Scroll-snap and navbar behavior are unchanged on mobile.
+
+## Liked Page
+
+- [x] `src/hooks/useLikedPhotos.ts` — infinite query for liked photos via `QueryKey.LIKED`
+- [x] `src/components/feed/LikedFeed.tsx` + `HomeFeed.tsx` — thin wrappers around shared `PhotoFeed`
+- [x] `src/components/feed/PhotoFeed.tsx` — extracted shared feed logic from `Feed.tsx`
+- [x] `src/views/LikedView.tsx` — liked page view
+- [x] `src/utils/removePhotoFromPages.ts` — removes a photo from infinite cache pages (used for unlike on liked feed)
+- [x] `useLike` extended: accepts `queryKey`, `invalidateKeys`, and `removeOnUnlike` option; cross-invalidates the other feed on success
+- [x] `QueryKey` const + type in `consts.ts` replacing raw strings throughout
+
+### Notes
+
+- Unliking on the liked feed removes the photo instantly via optimistic update (`removeOnUnlike: true`).
+- `useLike` invalidates the opposite feed on success so both pages stay consistent.
 
 ## Refinements / Bug Fixes
 
