@@ -73,7 +73,8 @@ Started a new agent for a fresh context window. I went over each file to surface
 1. **Debugging** — I called the API endpoints myself, used the network devtools, and used the app like any real user would to surface errors a human would encounter
 2. **Architecture and clean code** — separation of concerns, naming, styling decisions were all driven by me
 3. **Choosing an image provider** — I first went with Imgur, realized their docs were broken and unusable, then tested Pexels endpoints manually before writing any prompt or line of code
-4. **Code review** — nothing was committed or pushed before I thoroughly reviewed it; everything was reviewed manually so no surprises could slip in
+4. **Pexels attribution requirements** — Pexels API guidelines require a prominent link to Pexels on every request (`"Photos provided by Pexels"`) and a credit to the photographer (`"Photo by John Doe on Pexels"` linking to the photo page). I read their docs directly and made sure the app complies — this wasn't something I delegated to AI
+5. **Code review** — nothing was committed or pushed before I thoroughly reviewed it; everything was reviewed manually so no surprises could slip in
 
 ---
 
