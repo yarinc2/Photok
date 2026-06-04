@@ -56,18 +56,29 @@
 
 ## Liked Page
 
+- [x] DB schema updated: `likes` table now includes `photo_json TEXT NOT NULL`; full photo payload snapshotted on like so the liked feed needs zero external API calls
+- [x] `backend/src/db/likesRepository.ts`: `toggleLike` accepts + stores photo JSON; added `getLikedPhotos(page, perPage)` and `getLikedCount()`
+- [x] `backend/src/controllers/likesController.ts`: reads `req.body.photo` on toggle; new `getLikedPhotosHandler` returns `PhotosResponse`-shaped pagination
+- [x] `backend/src/routes/likes.ts`: added `GET /liked` (→ `GET /api/photos/liked`)
+- [x] `src/api/photosApi.ts`: `toggleLike` now sends full `Photo` in body; added `getLikedPhotos`
 - [x] `src/hooks/useLikedPhotos.ts` — infinite query for liked photos via `QueryKey.LIKED`
-- [x] `src/components/feed/LikedFeed.tsx` + `HomeFeed.tsx` — thin wrappers around shared `PhotoFeed`
-- [x] `src/components/feed/PhotoFeed.tsx` — extracted shared feed logic from `Feed.tsx`
-- [x] `src/views/LikedView.tsx` — liked page view
-- [x] `src/utils/removePhotoFromPages.ts` — removes a photo from infinite cache pages (used for unlike on liked feed)
-- [x] `useLike` extended: accepts `queryKey`, `invalidateKeys`, and `removeOnUnlike` option; cross-invalidates the other feed on success
-- [x] `QueryKey` const + type in `consts.ts` replacing raw strings throughout
+- [x] `src/hooks/useLike.ts`: mutation variable changed from `photoId: number` to `Photo`; added `removeOnUnlike` option
+- [x] `src/utils/removePhotoFromPages.ts` — filters a photo out of infinite cache pages (optimistic unlike on liked feed)
+- [x] `src/components/feed/PhotoFeed.tsx` — shared feed rendering logic; `HomeFeed` + `LikedFeed` are thin hook-wiring wrappers
+- [x] `src/views/LikedView.tsx` + `/liked` route in `App.tsx`
 
 ### Notes
 
+- Snapshot approach: photo data stored at like-time, no per-photo API calls on the liked feed.
 - Unliking on the liked feed removes the photo instantly via optimistic update (`removeOnUnlike: true`).
 - `useLike` invalidates the opposite feed on success so both pages stay consistent.
+
+## Refactoring
+
+- [x] `Feed.tsx` → `HomeFeed.tsx` to match `LikedFeed` / `LikedView` naming symmetry
+- [x] `HeartButton.tsx` + `PexelsLogo.tsx` moved from `feed/` to `common/` (not feed-specific)
+- [x] `like` callback → `handleLike`; `likeMutate` → `mutate` in `PhotoFeed`
+- [x] `anim` state → `isAnimating` in `HeartButton`
 
 ## Refinements / Bug Fixes
 
