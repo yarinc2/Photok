@@ -2,14 +2,20 @@ import { ArrowUpRight } from 'lucide-react';
 import styled from 'styled-components';
 import HeartButton from './HeartButton';
 import PexelsLogo from './PexelsLogo';
+import ProviderAttribution from '../common/ProviderAttribution';
 import type { Photo } from '../../types';
 
 interface InfoClusterProps {
   photo: Photo;
   onLike: () => void;
+  likeIsPending?: boolean;
 }
 
-export default function InfoCluster({ photo, onLike }: InfoClusterProps) {
+export default function InfoCluster({
+  photo,
+  onLike,
+  likeIsPending,
+}: InfoClusterProps) {
   return (
     <Cluster>
       <Title>{photo.alt}</Title>
@@ -20,12 +26,17 @@ export default function InfoCluster({ photo, onLike }: InfoClusterProps) {
       </CreditLink>
 
       <Actions>
-        <HeartButton liked={photo.liked} onClick={onLike} />
+        <HeartButton
+          liked={photo.liked}
+          onClick={onLike}
+          disabled={likeIsPending}
+        />
 
-        <PexelsLink href="https://www.pexels.com" target="_blank" rel="noopener noreferrer">
-          <PexelsLogo />
-          Photos provided by Pexels
-        </PexelsLink>
+        <ProviderAttribution
+          href="https://www.pexels.com"
+          logo={<PexelsLogo />}
+          text="Photos provided by Pexels"
+        />
       </Actions>
     </Cluster>
   );
@@ -61,16 +72,4 @@ const CreditLink = styled.a`
 const Actions = styled.div`
   display: flex;
   align-items: center;
-`;
-
-const PexelsLink = styled.a`
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.42);
-  text-decoration: none;
-  letter-spacing: 0.02em;
 `;

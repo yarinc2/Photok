@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { getPhotos } from '../services/pexelsService';
+import { getPhotos } from '../services/photosService';
 import { enrichWithLikes } from '../services/likesService';
 
 export async function getCuratedPhotos(

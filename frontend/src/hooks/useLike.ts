@@ -6,7 +6,7 @@ import type { InfinitePhotosPage } from '../types';
 export function useLike() {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: (photoId: number) => toggleLike(photoId),
 
     onMutate: async (photoId: number) => {
@@ -60,4 +60,10 @@ export function useLike() {
       );
     },
   });
+
+  return {
+    mutate: mutation.mutate,
+    isPending: mutation.isPending,
+    variables: mutation.variables,
+  };
 }

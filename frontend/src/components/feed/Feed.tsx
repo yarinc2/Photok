@@ -1,10 +1,11 @@
-import { useRef } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { usePhotos } from '../../hooks/usePhotos';
 import { useLike } from '../../hooks/useLike';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { getErrorCode } from '../../utils/apiError';
 import FeedSlide from './FeedSlide';
+import Toast from '../common/Toast';
 import LoadingSpinner from '../common/LoadingSpinner';
 import ErrorMessage from '../common/ErrorMessage';
 import EmptyState from '../common/EmptyState';
@@ -20,8 +21,29 @@ export default function Feed() {
     isFetchingNextPage,
     refetch,
   } = usePhotos();
-  const { mutate: like } = useLike();
+
+  const {
+    mutate: likeMutate,
+    isPending: likeIsPending,
+    variables: likePhotoId,
+  } = useLike();
+
   const feedRef = useRef<HTMLDivElement>(null);
+  const [toastVisible, setToastVisible] = useState(false);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const like = useCallback(
+    (photoId: number) => {
+      likeMutate(photoId, {
+        onError: () => {
+          if (toastTimer.current) clearTimeout(toastTimer.current);
+          setToastVisible(true);
+          toastTimer.current = setTimeout(() => setToastVisible(false), 1500);
+        },
+      });
+    },
+    [likeMutate],
+  );
 
   const sentinelRef = useInfiniteScroll({
     rootRef: feedRef,
@@ -41,12 +63,18 @@ export default function Feed() {
   return (
     <FeedContainer ref={feedRef}>
       {photos.map((photo) => (
-        <FeedSlide key={photo.id} photo={photo} onLike={like} />
+        <FeedSlide
+          key={photo.id}
+          photo={photo}
+          onLike={like}
+          likeIsPending={likeIsPending && likePhotoId === photo.id}
+        />
       ))}
 
       <div ref={sentinelRef} style={{ height: 1 }} />
 
       {isFetchingNextPage && <LoadingSpinner />}
+      <Toast visible={toastVisible} message="Couldn't update. Try again." />
     </FeedContainer>
   );
 }
