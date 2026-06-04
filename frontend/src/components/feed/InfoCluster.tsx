@@ -2,7 +2,7 @@ import { ArrowUpRight } from 'lucide-react';
 import styled from 'styled-components';
 import HeartButton from './HeartButton';
 import PexelsLogo from './PexelsLogo';
-import type { Photo } from '../types';
+import type { Photo } from '../../types';
 
 interface InfoClusterProps {
   photo: Photo;

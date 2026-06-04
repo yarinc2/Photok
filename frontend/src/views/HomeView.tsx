@@ -1,5 +1,5 @@
-import Feed from '../components/Feed';
-import Navbar from '../components/Navbar';
+import Feed from '../components/feed/Feed';
+import Navbar from '../components/layout/Navbar';
 
 export default function HomeView() {
   return (

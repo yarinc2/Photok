@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import InfoCluster from './InfoCluster';
-import type { Photo } from '../types';
+import type { Photo } from '../../types';
 
 interface FeedSlideProps {
   photo: Photo;

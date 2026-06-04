@@ -2,12 +2,25 @@ import styled from 'styled-components';
 
 interface ErrorMessageProps {
   onRetry: () => void;
+  code?: string;
 }
 
-export default function ErrorMessage({ onRetry }: ErrorMessageProps) {
+const CODE_MESSAGES: Record<string, string> = {
+  RATE_LIMITED: 'Too many requests, please try again later.',
+  FORBIDDEN: 'Access denied. There may be a configuration issue.',
+  UNAUTHORIZED: 'Access denied. There may be a configuration issue.',
+  NOT_FOUND: 'The requested resource could not be found.',
+  UPSTREAM_ERROR: 'The image service is unavailable. Try again shortly.',
+};
+
+export default function ErrorMessage({ onRetry, code }: ErrorMessageProps) {
+  const message =
+    (code && CODE_MESSAGES[code]) ??
+    'Could not load photos. Check your connection or API key.';
+
   return (
     <Wrap>
-      <Message>Could not load photos. Check your connection or API key.</Message>
+      <Message>{message}</Message>
       <RetryButton onClick={onRetry}>Try again</RetryButton>
     </Wrap>
   );
