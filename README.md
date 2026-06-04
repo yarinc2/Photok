@@ -2,6 +2,9 @@
 
 A full-screen vertical photo feed — think TikTok, but for photos. Built with React + Vite on the frontend and Express + TypeScript on the backend, powered by the [Pexels API](https://www.pexels.com/api/).
 
+<img width="702" height="1119" alt="image" src="https://github.com/user-attachments/assets/fff95ee8-f18d-469b-b67d-1b7b9c65cb91" />
+
+
 ## Features
 
 - Snap-scrolling vertical feed — one photo per viewport, swipe or scroll to advance
