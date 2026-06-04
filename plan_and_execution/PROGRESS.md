@@ -50,6 +50,10 @@
 - `dvh` used throughout instead of `vh` for correct mobile viewport handling.
 - `PER_PAGE` is 15 to match backend and Pexels API default.
 
+## UI Polish
+
+- [x] **Desktop layout** (`HomeView.tsx`, `Feed.tsx`, `FeedSlide.tsx`, `Navbar.tsx`, `index.css`): on viewports ≥ 768px the app renders as a centered phone-column (500×78dvh) with a black-to-Pexels-green gradient background. Scroll-snap and navbar behavior are unchanged on mobile.
+
 ## Refinements / Bug Fixes
 
 - [x] **Idle re-fetch fix** (`src/hooks/usePhotos.ts`): the app was silently re-fetching the same pages (1..N) while idle. Root cause was React Query's default `refetchOnWindowFocus`/`refetchOnReconnect` — for an infinite query a refetch re-runs _every_ loaded page, so a focus/reconnect event (devtools, alt-tab, network blip) re-pulled the entire feed. Disabled both, and set `staleTime: Infinity` (overriding the global `60_000`) since an endless feed never needs to auto-reload pages already on screen.
